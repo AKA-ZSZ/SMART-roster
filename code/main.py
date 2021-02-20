@@ -40,7 +40,7 @@ app.secret_key = os.urandom(12).hex()
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="Qwaszx2243",
+    passwd="sd",
     database="smartroster",
     auth_plugin="mysql_native_password"
 )
@@ -627,6 +627,14 @@ def edit_patient_records():
     except Exception as error:
         return str(error)
 
+    try:
+        cursor.execute("INSERT INTO smartroster.patient_archive SELECT * FROM smartroster.patients WHERE NOT smartroster.patients.discharged_date = '-'")
+        try:
+            cursor.execute("DELETE FROM smartroster.patients WHERE NOT smartroster.patients.discharged_date = '-'")
+        except Exception as error:
+            return str(error)
+    except Exception as error:
+        return str(error)
     return redirect(url_for('patient_records'))
 
 
@@ -646,6 +654,18 @@ def delete_patient_records():
         return str(error)
     return redirect(url_for('patient_records'))
 
+@app.route("/patientArchives", methods=["GET"])
+def patient_archives():
+    """ Display the patient archive page """
+    # Grabs all patients
+    cursor.execute("SELECT * FROM patient_archive")
+    patient_list = cursor.fetchall()
+    return render_template(
+        "./Records/patientArchive.html",
+        loggedin=session['loggedin'],
+        patientList=patient_list,
+        patientHeaders=PATIENT_HEADERS
+    )
 
 @app.route("/profile", methods=['GET'])
 def profile():
