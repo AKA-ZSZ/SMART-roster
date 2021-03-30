@@ -1,6 +1,5 @@
 from re import template
 
-from flask.wrappers import Response
 from nurse import Nurse
 from patient import Patient
 from assignment import main_assign
