@@ -237,12 +237,12 @@ def update_adv_role():
 
         try:
             cursor.execute(
-                "UPDATE smartroster.nurses SET advanced_role = '' WHERE current_shift = 1 and advanced_role NOT LIKE 'L%'")
-            cursor.execute("UPDATE smartroster.nurses SET advanced_role = 'Support' WHERE id in {0}".format(
+                "UPDATE nurses SET advanced_role = '' WHERE current_shift = 1 and advanced_role NOT LIKE 'L%'")
+            cursor.execute("UPDATE nurses SET advanced_role = 'Support' WHERE id in {0}".format(
                 support_nurses_id))
-            cursor.execute("UPDATE smartroster.nurses SET advanced_role = 'Charge' WHERE id in {0}".format(
+            cursor.execute("UPDATE nurses SET advanced_role = 'Charge' WHERE id in {0}".format(
                 charge_nurses_id))
-            cursor.execute("UPDATE smartroster.nurses SET advanced_role = 'Code' WHERE id in {0}".format(
+            cursor.execute("UPDATE nurses SET advanced_role = 'Code' WHERE id in {0}".format(
                 code_nurses_id))
             db.commit()
             return redirect(url_for('home'))
@@ -360,7 +360,7 @@ def edit_reference():
     fixed_ = request.form['fixed']
     flexible = request.form['flexible']
 
-    query = "UPDATE smartroster.reference_page SET clinical_area = %s, rotation = %s, group_def = %s, fte = %s, skill_level = %s, " \
+    query = "UPDATE reference_page SET clinical_area = %s, rotation = %s, group_def = %s, fte = %s, skill_level = %s, " \
             " a_trained = %s, transfer = %s, iv_trained = %s, advanced_role = %s, dta = %s, fixed_ = %s, flexible = %s WHERE id = 1"
 
     arguments = (clinical_area, rotation, group_def, fte,
@@ -441,7 +441,7 @@ def add_nurse_records():
     nurse_DTA = request.form['create_nurse_dta']
     nurse_comments = request.form['create_nurse_comments']
 
-    query = "insert into smartroster.nurses(name, clinical_area, rotation, group_num, fte, " \
+    query = "insert into nurses(name, clinical_area, rotation, group_num, fte, " \
             " skill_level, a_trained, transfer, iv, advanced_role, dta, comments) " \
             "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
     arguments = (nurse_name, nurse_area, nurse_rotation, nurse_group,
@@ -504,7 +504,7 @@ def edit_nurse_records():
     nurse_DTA = request.form['edit_nurse_dta']
     nurse_comments = request.form['edit_nurse_comments']
 
-    query = "UPDATE smartroster.nurses SET name = %s, clinical_area = %s, rotation = %s, group_num = %s, fte = %s, " \
+    query = "UPDATE nurses SET name = %s, clinical_area = %s, rotation = %s, group_num = %s, fte = %s, " \
             " skill_level = %s, a_trained = %s, transfer = %s, iv = %s, advanced_role = %s, dta = %s, comments = %s WHERE id = %s"
 
     arguments = (nurse_name, nurse_area, nurse_rotation, nurse_group,
@@ -523,7 +523,7 @@ def edit_nurse_records():
 def delete_nurse_records():
     """ Delete from nurse records """
     nurse_id = request.form['remove_nurse_id']
-    query = "DELETE FROM smartroster.nurses WHERE id = %s" % (nurse_id)
+    query = "DELETE FROM nurses WHERE id = %s" % (nurse_id)
 
     try:
         cursor.execute(query)
@@ -595,7 +595,7 @@ def add_patient_records():
     patient_date_admitted = request.form['create_patient_date_admitted']
     patient_comments = request.form['create_patient_comments']
 
-    query = "insert into smartroster.patients(name, clinical_area, bed_num, acuity, a_trained, transfer, iv, one_to_one, admission_date, comments, twin )" \
+    query = "insert into patients(name, clinical_area, bed_num, acuity, a_trained, transfer, iv, one_to_one, admission_date, comments, twin )" \
             "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
     arguments = (patient_name, patient_clinical_area, patient_bed, patient_acuity,
@@ -661,7 +661,7 @@ def edit_patient_records():
     patient_date_discharged = request.form['edit_date_discharged']
     patient_comments = request.form['edit_comments']
 
-    query = "UPDATE smartroster.patients SET name = %s, clinical_area = %s, bed_num = %s, acuity = %s, a_trained = %s, " \
+    query = "UPDATE patients SET name = %s, clinical_area = %s, bed_num = %s, acuity = %s, a_trained = %s, " \
             " transfer = %s, iv = %s, one_to_one = %s, admission_date = %s, discharged_date = %s, comments = %s, twin = %s WHERE id = %s"
 
     arguments = (patient_name, patient_clinical_area, patient_bed, patient_acuity, patient_a_trained, patient_transfer,
@@ -683,7 +683,7 @@ def delete_patient_records():
     # grabs patient id
     patient_id = request.form['remove_patient_id']
 
-    query = "DELETE FROM smartroster.patients WHERE id = %s" % \
+    query = "DELETE FROM patients WHERE id = %s" % \
             (patient_id)
 
     try:
@@ -755,7 +755,7 @@ def add_patient_archives():
     patient_date_admitted = request.form['create_patient_date_admitted']
     patient_comments = request.form['create_patient_comments']
 
-    query = "insert into smartroster.patients(name, clinical_area, bed_num, acuity, a_trained, transfer, iv, one_to_one, admission_date, comments, twin )" \
+    query = "insert into patients(name, clinical_area, bed_num, acuity, a_trained, transfer, iv, one_to_one, admission_date, comments, twin )" \
             "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 
     arguments = (patient_name, patient_clinical_area, patient_bed, patient_acuity,
@@ -821,7 +821,7 @@ def edit_patient_archives():
     patient_date_discharged = request.form['edit_date_discharged']
     patient_comments = request.form['edit_comments']
 
-    query = "UPDATE smartroster.patients SET name = %s, clinical_area = %s, bed_num = %s, acuity = %s, a_trained = %s, " \
+    query = "UPDATE patients SET name = %s, clinical_area = %s, bed_num = %s, acuity = %s, a_trained = %s, " \
             " transfer = %s, iv = %s, one_to_one = %s, admission_date = %s, discharged_date = %s, comments = %s, twin = %s WHERE id = %s"
 
     arguments = (patient_name, patient_clinical_area, patient_bed, patient_acuity, patient_a_trained, patient_transfer,
@@ -843,7 +843,7 @@ def delete_patient_archives():
     # grabs patient id
     patient_id = request.form['remove_patient_id']
 
-    query = "DELETE FROM smartroster.patients WHERE id = %s" % \
+    query = "DELETE FROM patients WHERE id = %s" % \
             (patient_id)
 
     try:
@@ -894,7 +894,7 @@ def upload_image():
             file.save(os.path.join(app.root_path,
                                    app.config['UPLOAD_FOLDER'], filename))
             cursor.execute(
-                'UPDATE smartroster.users SET profile_img = %s WHERE username = %s',
+                'UPDATE users SET profile_img = %s WHERE username = %s',
                 (filename, session['username'],))
             db.commit()
             return redirect(url_for('profile',
@@ -1224,14 +1224,14 @@ def current_PNSheet():
                 # print(curr_state_datetime)
 
             # use the datetime to find the assignments in db
-            # query="SELECT frn_patient_id,frn_nurse_id FROM smartroster.patient_nurse_assignments " \
+            # query="SELECT frn_patient_id,frn_nurse_id FROM patient_nurse_assignments " \
             # "WHERE patient_nurse_assignments.assignment_shift = '{0}'".format(curr_state_datetime)
 
             # cursor.execute(query)
 
             # insert new unassigned patient data into the patient_nurse_assignments
-            query = "INSERT INTO smartroster.patient_nurse_assignments(assignment_id,assignment_shift,frn_nurse_id,frn_patient_id) " \
-                "SELECT 0, '{0}', NULL, id FROM smartroster.patients "\
+            query = "INSERT INTO patient_nurse_assignments(assignment_id,assignment_shift,frn_nurse_id,frn_patient_id) " \
+                "SELECT 0, '{0}', NULL, id FROM patients "\
                 "WHERE patients.discharged_date = '-' and patients.previous_nurses IS NULL".format(
                     curr_state_datetime)
 
@@ -1264,9 +1264,9 @@ def current_PNSheet():
                     return str(error)
 
             # query clinical_area, bed_num, id(patient), name(patient), id(nurse), name(nurse) from patients table and nurses table
-            query = "SELECT p.clinical_area, p.bed_num, p.id, p.name,n.id,n.name FROM smartroster.patient_nurse_assignments "\
-                "INNER JOIN smartroster.patients as p ON patient_nurse_assignments.frn_patient_id= p.id "\
-                "INNER JOIN smartroster.nurses as n ON patient_nurse_assignments.frn_nurse_id= n.id OR patient_nurse_assignments.frn_nurse_id IS NULL "\
+            query = "SELECT p.clinical_area, p.bed_num, p.id, p.name,n.id,n.name FROM patient_nurse_assignments "\
+                "INNER JOIN patients as p ON patient_nurse_assignments.frn_patient_id= p.id "\
+                "INNER JOIN nurses as n ON patient_nurse_assignments.frn_nurse_id= n.id OR patient_nurse_assignments.frn_nurse_id IS NULL "\
                 "WHERE patient_nurse_assignments.assignment_shift = '{0}'".format(
                     curr_state_datetime)
 
@@ -1291,7 +1291,7 @@ def current_PNSheet():
             # print('new_state_assign_full -> ', new_state_assign_full)
 
             # query adv_role,nurse_ids from adv_role_assignments table
-            query = "SELECT adv_role,nurse_ids FROM smartroster.adv_role_assignments "\
+            query = "SELECT adv_role,nurse_ids FROM adv_role_assignments "\
                 "WHERE adv_role_assignments.assignment_shift = '{0}'".format(
                     curr_state_datetime)
 
@@ -1550,20 +1550,20 @@ def save_current_state():
             ###########################
             # save some information in the assignments to the patient nurse assignments table
 
-            # curr_assign_count_query="SELECT count(*) FROM smartroster.patient_nurse_assignments WHERE assignment_shift = '{0}'".format(date_time_obj)
+            # curr_assign_count_query="SELECT count(*) FROM patient_nurse_assignments WHERE assignment_shift = '{0}'".format(date_time_obj)
             # cursor.execute(curr_assign_count_query)
             # curr_assign_count=cursor.fetchone()
 
             # if curr_assign_count:
-            #     cursor.execute("DELETE FROM smartroster.patient_nurse_assignments WHERE assignment_shift = '{0}'".format(date_time_obj))
+            #     cursor.execute("DELETE FROM patient_nurse_assignments WHERE assignment_shift = '{0}'".format(date_time_obj))
 
             # for nurse_id, values in assignments.items():
             #     # print(nurse_id, values)
             #     for patient in values["patients"]:
 
-            #         # query = "INSERT INTO smartroster.patient_nurse_assignments (assignment_id, assignment_shift, frn_nurse_id, frn_patient_id) VALUES({0}, {1}, {2}, {3}) ON DUPLICATE KEY UPDATE assignment_shift={1}, frn_nurse_id={2}, frn_patient_id={3}".format(
+            #         # query = "INSERT INTO patient_nurse_assignments (assignment_id, assignment_shift, frn_nurse_id, frn_patient_id) VALUES({0}, {1}, {2}, {3}) ON DUPLICATE KEY UPDATE assignment_shift={1}, frn_nurse_id={2}, frn_patient_id={3}".format(
             #         #         "NULL",  curr_datetime, nurse_id, patient)
-            #         query = "INSERT INTO smartroster.patient_nurse_assignments (assignment_id, assignment_shift, frn_nurse_id, frn_patient_id) "\
+            #         query = "INSERT INTO patient_nurse_assignments (assignment_id, assignment_shift, frn_nurse_id, frn_patient_id) "\
             #         " VALUES(%s, %s, %s, %s)"
 
             #         arguments=(0,  date_time_obj, nurse_id, patient)
@@ -1776,7 +1776,7 @@ def save_current_state():
         adv_roles = ('charge', 'support', 'code',
                      'l_charge', 'l_support', 'l_code')
 
-        curr_adv_roles_assign_count_query = "SELECT count(*) FROM smartroster.adv_role_assignments WHERE assignment_shift = '{0}'".format(
+        curr_adv_roles_assign_count_query = "SELECT count(*) FROM adv_role_assignments WHERE assignment_shift = '{0}'".format(
             date_time_obj)
         cursor.execute(curr_adv_roles_assign_count_query)
         curr_adv_roles_assign_count = cursor.fetchone()
@@ -1784,7 +1784,7 @@ def save_current_state():
         # if current assignment exists in the database
         if curr_adv_roles_assign_count:
             cursor.execute(
-                "DELETE FROM smartroster.adv_role_assignments WHERE assignment_shift = '{0}'".format(date_time_obj))
+                "DELETE FROM adv_role_assignments WHERE assignment_shift = '{0}'".format(date_time_obj))
 
             db.commit()
 
@@ -1792,7 +1792,7 @@ def save_current_state():
         for adv_role in adv_roles:
             adv_nurse_ids = str(state_assignment[adv_role])
 
-            query = "INSERT INTO smartroster.adv_role_assignments (assignment_id, assignment_shift, adv_role, nurse_ids) "\
+            query = "INSERT INTO adv_role_assignments (assignment_id, assignment_shift, adv_role, nurse_ids) "\
                     " VALUES(%s, %s, %s, %s)"
 
             arguments = (0,  date_time_obj, adv_role, adv_nurse_ids)
@@ -1807,7 +1807,7 @@ def save_current_state():
         ###########################
         # save some information in the state_assignment to the patient nurse assignments table
 
-        curr_assign_count_query = "SELECT count(*) FROM smartroster.patient_nurse_assignments WHERE assignment_shift = '{0}'".format(
+        curr_assign_count_query = "SELECT count(*) FROM patient_nurse_assignments WHERE assignment_shift = '{0}'".format(
             date_time_obj)
         cursor.execute(curr_assign_count_query)
         curr_assign_count = cursor.fetchone()
@@ -1815,7 +1815,7 @@ def save_current_state():
         # if current assignment exists in the database
         if curr_assign_count:
             cursor.execute(
-                "DELETE FROM smartroster.patient_nurse_assignments WHERE assignment_shift = '{0}'".format(date_time_obj))
+                "DELETE FROM patient_nurse_assignments WHERE assignment_shift = '{0}'".format(date_time_obj))
 
             db.commit()
 
@@ -1831,9 +1831,9 @@ def save_current_state():
                 patient_id = curr_pair["p"][0]
                 nurse_id = curr_pair["n"][0]
 
-                # query = "INSERT INTO smartroster.patient_nurse_assignments (assignment_id, assignment_shift, frn_nurse_id, frn_patient_id) VALUES({0}, {1}, {2}, {3}) ON DUPLICATE KEY UPDATE assignment_shift={1}, frn_nurse_id={2}, frn_patient_id={3}".format(
+                # query = "INSERT INTO patient_nurse_assignments (assignment_id, assignment_shift, frn_nurse_id, frn_patient_id) VALUES({0}, {1}, {2}, {3}) ON DUPLICATE KEY UPDATE assignment_shift={1}, frn_nurse_id={2}, frn_patient_id={3}".format(
                 #         "NULL",  curr_datetime, nurse_id, patient)
-                query = "INSERT INTO smartroster.patient_nurse_assignments (assignment_id, assignment_shift, frn_nurse_id, frn_patient_id) "\
+                query = "INSERT INTO patient_nurse_assignments (assignment_id, assignment_shift, frn_nurse_id, frn_patient_id) "\
                     " VALUES(%s, %s, %s, %s)"
 
                 arguments = (0,  date_time_obj, nurse_id, patient_id)
