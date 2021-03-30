@@ -86,12 +86,12 @@ def setup():
 
                 statement = ""
 
-    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_users.sql")
-    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_reference_page.sql")
-    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_nurses.sql")
-    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_patients.sql")
-    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_patient_nurse_assignments.sql")
-    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_adv_role_assignments.sql")
+    exec_sql_file(cursor,f"{os.path.dirname(os.getcwd())}/SQLImportFiles/smartroster_users.sql")
+    exec_sql_file(cursor,f"{os.path.dirname(os.getcwd())}/SQLImportFiles/smartroster_reference_page.sql")
+    exec_sql_file(cursor,f"{os.path.dirname(os.getcwd())}/SQLImportFiles/smartroster_nurses.sql")
+    exec_sql_file(cursor,f"{os.path.dirname(os.getcwd())}/SQLImportFiles/smartroster_patients.sql")
+    exec_sql_file(cursor,f"{os.path.dirname(os.getcwd())}/SQLImportFiles/smartroster_patient_nurse_assignments.sql")
+    exec_sql_file(cursor,f"{os.path.dirname(os.getcwd())}/SQLImportFiles/smartroster_adv_role_assignments.sql")
 
 @app.context_processor
 def inject_now():
