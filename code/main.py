@@ -2098,5 +2098,8 @@ def assign_nurse_patient() -> dict:
 
 if __name__ == "__main__":
     # Testing
-    webbrowser.open("http://localhost:5000/", new=1, autoraise=True)
-    app.run()
+    # webbrowser.open("http://localhost:5000/", new=1, autoraise=True)
+    # app.run()
+
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
