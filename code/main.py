@@ -39,18 +39,56 @@ app.config.update(
 
 app.secret_key = os.urandom(12).hex()
 
+
+
+# db = mysql.connector.connect(
+#     host="localhost",
+#     user="root",
+#     passwd="MyNewPassword",
+#     database="smartroster",
+#     auth_plugin="mysql_native_password"
+# )
+
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="Qwaszx2243",
-    # passwd="MyNewPassword",
-    database="smartroster",
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    passwd=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME"),
     auth_plugin="mysql_native_password"
 )
 
+
 cursor = db.cursor()
 
+@app.before_first_request
+def setup():
 
+    def exec_sql_file(cursor, sql_file):
+        print ("\n[INFO] Executing SQL script file: '%s'" % (sql_file))
+        statement = ""
+
+        for line in open(sql_file):
+            if re.match(r'--', line):  # ignore sql comment lines
+                continue
+            if not re.search(r';$', line):  # keep appending lines that don't end in ';'
+                statement = statement + line
+            else:  # when you get a line ending in ';' then exec statement and reset for next statement
+                statement = statement + line
+                #print "\n\n[DEBUG] Executing SQL statement:\n%s" % (statement)
+                try:
+                    cursor.execute(statement)
+                except (OperationalError, ProgrammingError) as e:
+                    print ("\n[WARN] MySQLError during execute statement \n\tArgs: '%s'" % (str(e.args)))
+
+                statement = ""
+
+    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_users.sql")
+    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_reference_page.sql")
+    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_nurses.sql")
+    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_patients.sql")
+    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_patient_nurse_assignments.sql")
+    exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_adv_role_assignments.sql")
+    
 @app.context_processor
 def inject_now():
     return {'now': datetime.now()}
