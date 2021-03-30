@@ -1252,7 +1252,7 @@ def current_PNSheet():
                     args.append(value[0])
 
                 # update the previous_nurses field
-                query = "UPDATE `smartroster`.`patients` SET `previous_nurses` = '[]' WHERE `id` IN (%s)" % format_strings
+                query = "UPDATE `patients` SET `previous_nurses` = '[]' WHERE `id` IN (%s)" % format_strings
 
                 arguments = tuple(args)
                 # print(arguments)
