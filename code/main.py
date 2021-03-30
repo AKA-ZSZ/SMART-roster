@@ -12,6 +12,7 @@ from werkzeug.utils import secure_filename
 
 from datetime import datetime
 
+import re
 import json
 import mysql.connector
 import os
@@ -88,7 +89,7 @@ def setup():
     exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_patients.sql")
     exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_patient_nurse_assignments.sql")
     exec_sql_file(cursor,f"{os.path.dirname}/SQLImportFiles/smartroster_adv_role_assignments.sql")
-    
+
 @app.context_processor
 def inject_now():
     return {'now': datetime.now()}
