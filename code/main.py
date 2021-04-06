@@ -44,8 +44,8 @@ app.secret_key = os.urandom(12).hex()
 
 db = mysql.connector.connect(
     host="localhost",
-    user="test",
-    passwd="test",
+    user="root",
+    passwd="MyNewPassword",
     database="smartroster",
     auth_plugin="mysql_native_password"
 )
@@ -123,6 +123,7 @@ def home():
         # Grab database information
         cursor.execute("SELECT * FROM nurses")
         nurse_list = cursor.fetchall()
+        print(nurse_list)
         cursor.execute("SELECT * FROM patients")
         patient_list = cursor.fetchall()
 
@@ -174,7 +175,6 @@ def update_current_nurses():
                 db.commit()
                 return redirect(url_for('home'))
             except Exception as error:
-                return str(error)
                 return str(error)
     except:
         return str(Exception)
@@ -1171,7 +1171,7 @@ def current_PNSheet():
                         pn_skill[patient_location].append((nurse[0], nurse[1]))
                     ##########################
 
-        # print(pn_skill)
+        # print("pn_skill -> ",pn_skill)
 
         # if os.path.exists("{0}/cache/current_shift/state.json".format(CURR_DIR)):
         #     with open("{0}/cache/current_shift/state.json".format(CURR_DIR), 'r') as jsonfile:
@@ -1270,6 +1270,10 @@ def current_PNSheet():
 
             # Dump the formatted data into the dict['assignment'] in state.json
             curr_state_assignment['assignment'] = new_state_assign_full
+
+            curr_state_assignment=refresh_patient_count(curr_state_assignment, nurse_list)
+
+            # print(curr_state_assignment)
 
             with open("./cache/current_shift/state.json", 'w') as statefile:
                 statefile.seek(0)
@@ -1495,7 +1499,11 @@ def save_current_state():
             "author": session['name'],
             "fixed": fixed[0],
             "flex": flex[0],
-            "id": 0
+            "id": 0,
+
+            # add patient Count of each nurse in current shift
+            "patientCount":{},
+
         }
 
         # Load state history if available
@@ -1720,20 +1728,26 @@ def save_current_state():
 
         # alert when no nurse was assigned to a patient
         for curr_pair in state_assignment['assignment'].values():
-        
+
             if len(curr_pair["p"]) and not len(curr_pair["n"]):
                 print(f'No nurse was assigned to patient {curr_pair["p"][1]}!')
                 return redirect(url_for('current_PNSheet'))
+
+        # count patients for each nurse
+        # increment the patientCount in state
+        state_assignment=refresh_patient_count(state_assignment, nurse_list)
+
 
         # Write/Overwrite state.json
         if os.path.exists("{0}/cache/current_shift/state.json".format(CURR_DIR)):
             os.remove(
                 "{0}/cache/current_shift/state.json".format(CURR_DIR))
-        with open("./cache/current_shift/state.json", 'w') as jsonfile:
+        with open("{0}/cache/current_shift/state.json".format(CURR_DIR), 'w') as jsonfile:
             state_assignment_list.append(state_assignment)
             json.dump(state_assignment_list, jsonfile)
 
-        # print("State assignment -> ", state_assignment)
+
+        print("State assignment -> ", state_assignment)
 
         ############################
         # save advanced role assignments to adv_role_assignments table
@@ -1783,10 +1797,6 @@ def save_current_state():
 
             db.commit()
 
-
-
-       
-
         # overwrite the new current assignment state into the database
         for curr_pair in state_assignment['assignment'].values():
             # print(nurse_id, values)
@@ -1807,7 +1817,6 @@ def save_current_state():
                     db.commit()
                 except Exception as error:
                     return str(error)
-                
 
             ###########################
         # Write/Overwrite flags.json
@@ -2059,6 +2068,29 @@ def assign_nurse_patient() -> dict:
 # @app.route('/flag', methods=['GET'])
 # def assign_nurse_patient() -> dict:
 
+def refresh_patient_count(state_assignment, nurse_list):
+    # count patients for each nurse
+    # increment the patientCount in state
+    
+    # initialize the patientCount
+    state_assignment['patientCount']={}
+    for curr_pair in state_assignment['assignment'].values():
+
+        if len(curr_pair["p"]) and len(curr_pair["n"]):
+            nurse_id=curr_pair['n'][0]
+            nurse_name=curr_pair['n'][1]
+            if nurse_id in state_assignment['patientCount']:
+                state_assignment['patientCount'][nurse_id][1]+=1
+            else:
+                state_assignment['patientCount'][nurse_id]=[nurse_name,1]
+
+    # print("nurse_list", nurse_list)
+    for nurse in nurse_list:
+        if str(nurse[0]) not in state_assignment['patientCount']:
+            state_assignment['patientCount'][str(nurse[0])]=[nurse[1],0]
+    
+    print('patientCount ->',state_assignment['patientCount'])
+    return state_assignment
 
 if __name__ == "__main__":
     # Testing
